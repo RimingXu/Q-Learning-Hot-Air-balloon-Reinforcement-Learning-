@@ -1,24 +1,28 @@
-""" Python Example for reading (s, a, r, s') information from the game 
-through the socket"""
+import gym
 
-import socket
+# 创建环境
+# env = gym.make('CartPole-v1')
+env = gym.make('CartPole-v1', render_mode = "human")
 
-# Create a TCP/IP socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# Bind the socket to the port
-server_address = ('localhost', 24383)
-sock.connect(server_address) # connect 
+# 初始化环境
+env.reset()
 
-while True:
-    d = sock.recv(1024).strip()
-    if not d: 
-    	break
-    print "received data:", d
-    old_state, action, reward, new_state = d.split(",")
-    reward = float(reward)
-    print "old_state", old_state
-    print "action", action
-    print "reward", reward
-    print "new_state", new_state
+for _ in range(1000):
+    # 渲染环境
+    env.render()
 
+    # 随机动作
+    action = env.action_space.sample()
+
+    # 执行动作
+
+    observation, reward, _ , done, info = env.step(action)
+
+    print(observation,reward)
+    # 如果任务结束，则重置环境
+    if done:
+        env.reset()
+
+# 关闭环境
+env.close()
